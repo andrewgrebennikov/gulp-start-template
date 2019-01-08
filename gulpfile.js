@@ -85,25 +85,10 @@ gulp.task('sass', gulp.parallel('smartgrid', function () {
 		}));
 }));
 
-gulp.task('common-js', function () {
-	return gulp.src([
-			'app/js/common.js'
-		])
-		.pipe(plumber({
-			errorHandler: function (err) {
-				console.log(err);
-				this.emit('end');
-			}
-		}))
-		.pipe(concat('common.min.js'))
-		.pipe(uglify())
-		.pipe(gulp.dest('app/js'));
-});
-
-gulp.task('js', gulp.parallel('common-js', function () {
+gulp.task('js', function () {
 	return gulp.src([
 			'app/libs/jquery/jquery.min.js',
-			'app/js/common.min.js' // Always at the end
+			'app/js/common.js' // Always at the end
 		])
 		.pipe(plumber({
 			errorHandler: function (err) {
@@ -111,13 +96,15 @@ gulp.task('js', gulp.parallel('common-js', function () {
 				this.emit('end');
 			}
 		}))
+		.pipe(mode.development(sourcemaps.init()))
 		.pipe(concat('scripts.min.js'))
 		.pipe(uglify())
+		.pipe(mode.development(sourcemaps.write('.')))
 		.pipe(gulp.dest('build/js'))
 		.pipe(browsersync.reload({
 			stream: true
 		}))
-}));
+});
 
 gulp.task('svgsprite', function () {
 	return gulp.src('app/img/icons/icon-*.svg')
