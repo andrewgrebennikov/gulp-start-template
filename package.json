@@ -6,7 +6,7 @@
 	"scripts": {
 		"stylelint": "stylelint \"app/**/*.scss\" --syntax=scss",
 		"start": "npm run development && gulp browser-sync",
-		"development": "gulp build --development",
+		"development": "gulp smartgrid build --development",
 		"production": "gulp build --production"
 	},
 	"author": "Andrey Grebennikov",

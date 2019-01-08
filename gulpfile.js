@@ -54,7 +54,7 @@ gulp.task('smartgrid', function (done) {
 	done();
 });
 
-gulp.task('sass', gulp.parallel('smartgrid', function () {
+gulp.task('sass', function () {
 	return gulp.src('app/sass/**/*.{scss,sass}')
 		.pipe(plumber({
 			errorHandler: function (err) {
@@ -83,7 +83,7 @@ gulp.task('sass', gulp.parallel('smartgrid', function () {
 		.pipe(browsersync.reload({
 			stream: true
 		}));
-}));
+});
 
 gulp.task('js', function () {
 	return gulp.src([
