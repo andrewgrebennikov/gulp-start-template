@@ -1,12 +1,10 @@
 @import 'vars';
 @import 'fonts';
 @import 'libs';
+@import 'page';
 
 body {
-	position: relative;
-	min-width: 320px;
-	color: $black;
-	font-family: $arial-font;
-	font-size: 16px;
-	line-height: 20px;
+	font-family: $arial;
 }
+
+@import 'print';
