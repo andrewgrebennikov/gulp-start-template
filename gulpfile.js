@@ -22,6 +22,7 @@ var gulp = require('gulp'),
 	autoprefixer = require('autoprefixer'),
 	flexbugs = require('postcss-flexbugs-fixes'),
 	sortCSSmq = require('sort-css-media-queries'),
+	babel = require("gulp-babel"),
 	fs = require('fs');
 
 gulp.task('smartgrid', function (done) {
@@ -97,6 +98,7 @@ gulp.task('js', function () {
 			}
 		}))
 		.pipe(mode.development(sourcemaps.init()))
+		.pipe(babel())
 		.pipe(concat('scripts.min.js'))
 		.pipe(uglify())
 		.pipe(mode.development(sourcemaps.write('.')))
