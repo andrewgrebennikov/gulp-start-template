@@ -22,8 +22,7 @@ var gulp = require('gulp'),
 	autoprefixer = require('autoprefixer'),
 	flexbugs = require('postcss-flexbugs-fixes'),
 	sortCSSmq = require('sort-css-media-queries'),
-	babel = require("gulp-babel"),
-	fs = require('fs');
+	babel = require("gulp-babel");
 
 gulp.task('smartgrid', function (done) {
 	const settings = {
@@ -128,24 +127,21 @@ gulp.task('svgsprite', function () {
 		.pipe(gulp.dest('app/img/icons'));
 });
 
-const spriteSvgPath = 'app/img/icons';
 gulp.task('html', function () {
-	if (fs.existsSync(spriteSvgPath)) {
-		return gulp.src('app/*.html')
-			.pipe(plumber({
-				errorHandler: function (err) {
-					console.log(err);
-					this.emit('end');
-				}
-			}))
-			.pipe(posthtml([
-				include()
-			]))
-			.pipe(gulp.dest('build'))
-			.pipe(browsersync.reload({
-				stream: true
-			}))
-	}
+	return gulp.src('app/**/*.html')
+		.pipe(plumber({
+			errorHandler: function (err) {
+				console.log(err);
+				this.emit('end');
+			}
+		}))
+		.pipe(posthtml([
+			include()
+		]))
+		.pipe(gulp.dest('build'))
+		.pipe(browsersync.reload({
+			stream: true
+		}))
 });
 
 gulp.task('browser-sync', function () {
@@ -159,7 +155,7 @@ gulp.task('browser-sync', function () {
 	gulp.watch(['libs/**/*.js', 'app/js/common.js'], gulp.parallel('js'));
 	gulp.watch(['!app/img/icons/**/*', 'app/img/**/*{jpg,jpeg,png,gif,svg,webp}'], gulp.parallel('copy'));
 	gulp.watch('app/img/icons/icon-*.svg', gulp.parallel('svgsprite'));
-	gulp.watch('app/*.html', gulp.parallel('html'));
+	gulp.watch('app/**/*.html', gulp.parallel('html'));
 });
 
 gulp.task('delbuild', function () {
