@@ -91,6 +91,9 @@ gulp.task('js', function () {
 			'node_modules/jquery/dist/jquery.min.js',
 			'node_modules/swiper/dist/js/swiper.min.js',
 			'node_modules/tooltipster/dist/js/tooltipster.bundle.min.js',
+			'node_modules/baron/baron.min.js',
+			'node_modules/choices.js/public/assets/scripts/choices.min.js',
+			'app/libs/ion-tabs/ion.tabs.min.js',
 			'app/libs/ion-tabs/ion.tabs.min.js',
 			'app/js/common.js' // Always at the end
 		])
