@@ -4,16 +4,18 @@
 	"description": "Start HTML Template",
 	"main": "index.js",
 	"scripts": {
-		"stylelint": "stylelint \"app/**/*.scss\" --syntax=scss",
+		"style": "stylelint \"app/scss/**/*.scss\" --syntax=scss",
+		"js": "eslint app/js/**/*.js",
 		"start": "npm run development && gulp browser-sync",
 		"development": "gulp smartgrid build --development",
-		"production": "gulp build --production"
+		"production": "gulp build --production",
+		"lint-staged": "lint-staged"
 	},
 	"author": "Andrey Grebennikov",
 	"license": "ISC",
 	"devDependencies": {
 		"@babel/core": "^7.2.2",
-		"@babel/preset-env": "^7.2.3",
+		"@babel/preset-env": "^7.3.1",
 		"autoprefixer": "^9.4.6",
 		"babel-eslint": "^10.0.1",
 		"browser-sync": "^2.26.3",
@@ -22,7 +24,7 @@
 		"eslint": "^5.12.1",
 		"gulp": "^4.0.0",
 		"gulp-babel": "^8.0.0",
-		"gulp-cache": "^1.1.0",
+		"gulp-cache": "^1.1.1",
 		"gulp-concat": "^2.6.1",
 		"gulp-mode": "^1.0.2",
 		"gulp-plumber": "^1.2.1",
@@ -34,20 +36,33 @@
 		"gulp-svgmin": "^2.1.0",
 		"gulp-svgstore": "^7.0.1",
 		"gulp-uglify": "^3.0.1",
+		"husky": "^1.3.1",
+		"lint-staged": "^8.1.0",
 		"postcss-csso": "^3.0.0",
 		"postcss-flexbugs-fixes": "^4.1.0",
 		"posthtml-include": "^1.2.0",
 		"smart-grid": "^2.1.2",
 		"stylelint": "^9.10.1",
-		"stylelint-order": "^2.0.0",
-		"stylelint-selector-bem-pattern": "^2.0.0"
+		"stylelint-order": "^2.0.0"
 	},
 	"browserslist": [
 		"> 1%",
 		"last 2 versions"
 	],
+	"lint-staged": {
+		"app/scss/**/*.scss": "stylelint --syntax=scss",
+		"app/js/**/*.js": "eslint"
+	},
 	"dependencies": {
-		"npm": "^6.6.0",
-		"sort-css-media-queries": "^1.4.3"
+		"jquery": "^3.3.1",
+		"npm": "^6.7.0",
+		"sort-css-media-queries": "^1.4.3",
+		"swiper": "^4.4.6",
+		"tooltipster": "^4.2.6"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
 	}
 }

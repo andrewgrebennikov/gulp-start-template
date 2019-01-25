@@ -13,9 +13,9 @@
 	min-height: 100%;
 
 	&__inner {
-		min-height: 100vh;
 		display: flex;
 		flex-direction: column;
+		min-height: 100vh;
 	}
 
 	&__content {

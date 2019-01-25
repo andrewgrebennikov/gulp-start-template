@@ -55,7 +55,7 @@ gulp.task('smartgrid', function (done) {
 });
 
 gulp.task('sass', function () {
-	return gulp.src('app/sass/**/*.{scss,sass}')
+	return gulp.src('app/scss/**/*.{scss,sass}')
 		.pipe(plumber({
 			errorHandler: function (err) {
 				console.log(err);
@@ -87,7 +87,10 @@ gulp.task('sass', function () {
 
 gulp.task('js', function () {
 	return gulp.src([
-			'app/libs/jquery/jquery.min.js',
+			'node_modules/jquery/dist/jquery.min.js',
+			'node_modules/swiper/dist/js/swiper.min.js',
+			'node_modules/tooltipster/dist/js/tooltipster.bundle.min.js',
+			'app/libs/ion-tabs/ion.tabs.min.js',
 			'app/js/common.js' // Always at the end
 		])
 		.pipe(plumber({
@@ -128,7 +131,7 @@ gulp.task('svgsprite', function () {
 });
 
 gulp.task('html', function () {
-	return gulp.src('app/**/*.html')
+	return gulp.src('app/*.html')
 		.pipe(plumber({
 			errorHandler: function (err) {
 				console.log(err);
@@ -151,7 +154,7 @@ gulp.task('browser-sync', function () {
 		},
 		open: false
 	});
-	gulp.watch('app/sass/**/*.{scss,sass}', gulp.parallel('sass'));
+	gulp.watch('app/scss/**/*.{scss,sass}', gulp.parallel('sass'));
 	gulp.watch(['libs/**/*.js', 'app/js/common.js'], gulp.parallel('js'));
 	gulp.watch(['!app/img/icons/**/*', 'app/img/**/*{jpg,jpeg,png,gif,svg,webp}'], gulp.parallel('copy'));
 	gulp.watch('app/img/icons/icon-*.svg', gulp.parallel('svgsprite'));

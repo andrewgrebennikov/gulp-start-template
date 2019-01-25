@@ -1,40 +1,9 @@
 {
   "syntax": "scss",
   "plugins": [
-    "stylelint-selector-bem-pattern",
     "stylelint-order"
   ],
   "rules": {
-    # Проверка совпадения селектора и имени файла, БЭМ-ошибок
-    # https://github.com/postcss/postcss-bem-linter#custom-patterns
-    "plugin/selector-bem-pattern": [{
-      "implicitComponents": true,
-      "componentName": "[-a-z]+",
-      "componentSelectors": {
-        "initial": "^(\\.{componentName}(__[a-z]+|--[-a-z0-9]+|__[-a-z]+--[-a-z0-9]+|.[-a-z]+|__[a-z]+.[-a-z]+)?)$",
-        "combined": "^.+$"
-      },
-      "ignoreSelectors": [
-        "^\\.(no-)?js(-modal-open)?$",
-        "a(\\[[a-z]+|:[a-z]+)?",
-        "h[1-6]",
-        "pre",
-        "blockquote",
-        "thead",
-        "tr",
-        "img",
-        "img",
-        "p",
-        "table",
-        "^&:empty",
-        "#{\\$[-a-z]+}__[-a-z]+",
-        "^\\*$"
-      ],
-    },
-    {
-      "severity": "warning",
-      "message": "Селектор не из имени файла или БЭМ-ошибка"
-    }],
     # Проверка очередности в контексте селектора
     # https://github.com/hudochenkov/stylelint-order/blob/master/rules/order/README.md
     "order/order": [
