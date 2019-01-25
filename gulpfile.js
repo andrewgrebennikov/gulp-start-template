@@ -22,6 +22,7 @@ var gulp = require('gulp'),
 	autoprefixer = require('autoprefixer'),
 	flexbugs = require('postcss-flexbugs-fixes'),
 	sortCSSmq = require('sort-css-media-queries'),
+	beautify = require('gulp-jsbeautifier'),
 	babel = require("gulp-babel");
 
 gulp.task('smartgrid', function (done) {
@@ -139,8 +140,11 @@ gulp.task('html', function () {
 			}
 		}))
 		.pipe(posthtml([
-			include()
+			include({
+				encoding: 'utf8'
+			})
 		]))
+		.pipe(beautify())
 		.pipe(gulp.dest('build'))
 		.pipe(browsersync.reload({
 			stream: true
