@@ -137,16 +137,6 @@ a {
 	&:focus {
 		color: $link-color--hover;
 	}
-
-	&[href^='tel:'] {
-
-		@media (min-width: $screen-xl) {
-			white-space: nowrap;
-			pointer-events: none;
-			text-decoration: inherit;
-			color: inherit;
-		}
-	}
 }
 
 hr {

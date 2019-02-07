@@ -4,24 +4,23 @@ var gulp = require('gulp'),
 	include = require('posthtml-include'),
 	sourcemaps = require('gulp-sourcemaps'),
 	svgmin = require('gulp-svgmin'),
-	mqpacker = require('css-mqpacker'),
 	svgstore = require('gulp-svgstore'),
 	plumber = require('gulp-plumber'),
 	cache = require('gulp-cache'),
 	postcss = require('gulp-postcss'),
-	csso = require('postcss-csso'),
 	sass = require('gulp-sass'),
 	browsersync = require('browser-sync'),
 	concat = require('gulp-concat'),
 	uglify = require('gulp-uglify'),
 	rename = require('gulp-rename'),
 	smartgrid = require('smart-grid'),
+	cssnano = require('cssnano'),
 	mode = require('gulp-mode')({
 		modes: ["production", "development"]
 	}),
 	autoprefixer = require('autoprefixer'),
 	flexbugs = require('postcss-flexbugs-fixes'),
-	sortCSSmq = require('sort-css-media-queries'),
+	extractMediaQuery = require('postcss-extract-media-query'),
 	beautify = require('gulp-jsbeautifier'),
 	babel = require("gulp-babel");
 
@@ -68,13 +67,33 @@ gulp.task('sass', function () {
 		.pipe(postcss([
 			autoprefixer(),
 			flexbugs(),
-			mqpacker({
-				sort: sortCSSmq.desktopFirst
-			}),
-			csso({
-				comments: false
+			cssnano({
+				preset: [
+					'default', {
+						discardComments: {
+							removeAll: true
+						}
+					}
+				]
 			})
 		]))
+		.pipe(mode.production(
+			postcss([
+				extractMediaQuery({
+					output: {
+						path: 'build/css',
+						name: '[name]-[query].min.css'
+					},
+					queries: {
+						'print': 'print',
+						'(max-width:1024px)': 'tablet',
+						'(max-width:768px)': 'mobile'
+					},
+					minimize: true,
+					whitelist: true
+				})
+			])
+		))
 		.pipe(rename({
 			suffix: '.min',
 			prefix: ''
