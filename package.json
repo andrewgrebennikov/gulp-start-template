@@ -47,6 +47,11 @@
 		"> 1%",
 		"last 2 versions"
 	],
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
 	"lint-staged": {
 		"*.{html,js,md}": "editorconfig-cli",
 		"app/scss/**/*.scss": "stylelint --syntax=scss",
@@ -57,10 +62,5 @@
 		"normalize.css": "^8.0.1",
 		"npm": "^6.9.0",
 		"swiper": "^4.5.0"
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "lint-staged"
-		}
 	}
 }
