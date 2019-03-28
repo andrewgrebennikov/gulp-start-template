@@ -1,0 +1,39 @@
+@import 'vars';
+@import 'fonts';
+@import 'libs';
+
+body {
+	font-family: $arial;
+
+	@media (max-width: $tablet) {
+		background-color: $color-main;
+	}
+
+	@media (max-width: $mobile) {
+		background-color: $color-danger;
+	}
+}
+
+.page {
+	box-sizing: border-box;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	-webkit-text-size-adjust: 100%;
+	min-width: 320px;
+	min-height: 100%;
+
+	&__inner {
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+	}
+
+	&__content {
+		flex-grow: 1;
+	}
+
+	&__footer {
+		flex-shrink: 0;
+	}
+}
+
+@import 'print';

@@ -1,210 +1,112 @@
-var gulp = require('gulp'),
-	del = require('del'),
-	posthtml = require('gulp-posthtml'),
-	include = require('posthtml-include'),
-	sourcemaps = require('gulp-sourcemaps'),
-	svgmin = require('gulp-svgmin'),
-	svgstore = require('gulp-svgstore'),
-	plumber = require('gulp-plumber'),
-	cache = require('gulp-cache'),
-	postcss = require('gulp-postcss'),
-	sass = require('gulp-sass'),
-	browsersync = require('browser-sync'),
-	concat = require('gulp-concat'),
-	uglify = require('gulp-uglify'),
-	rename = require('gulp-rename'),
-	smartgrid = require('smart-grid'),
-	cssnano = require('cssnano'),
-	mode = require('gulp-mode')({
-		modes: ["production", "development"]
-	}),
-	autoprefixer = require('autoprefixer'),
-	flexbugs = require('postcss-flexbugs-fixes'),
-	extractMediaQuery = require('postcss-extract-media-query'),
-	beautify = require('gulp-jsbeautifier'),
-	babel = require("gulp-babel");
+const gulp = require('gulp');
+const del = require('del');
+const posthtml = require('gulp-posthtml');
+const include = require('posthtml-include');
+const sourcemaps = require('gulp-sourcemaps');
+const svgmin = require('gulp-svgmin');
+const svgstore = require('gulp-svgstore');
+const postcss = require('gulp-postcss');
+const sass = require('gulp-sass');
+const browserSync = require('browser-sync');
+const gulpWebpack = require('webpack-stream');
+const webpack = require('webpack');
+const rename = require('gulp-rename');
+const mode = require('gulp-mode')({modes: ['production', 'development']});
+const beautify = require('gulp-jsbeautifier');
+const webpackDevConfig = require('./webpack.dev.js');
+const webpackProdConfig = require('./webpack.prod.js');
 
-gulp.task('smartgrid', function (done) {
-	const settings = {
-		outputStyle: 'scss',
-		columns: 12,
-		offset: '30px',
-		mobileFirst: false,
-		container: {
-			maxWidth: '1200px',
-			fields: '30px'
-		},
-		breakPoints: {
-			lg: {
-				width: '1100px'
-			},
-			md: {
-				width: '960px'
-			},
-			sm: {
-				width: '780px',
-				fields: '15px'
-			},
-			xs: {
-				width: '560px'
-			}
-		}
-	};
-	smartgrid('app/libs/smartgrid', settings);
-	done();
-});
+function styles() {
+    return gulp.src('app/scss/**/*.{scss,sass}')
+        .pipe(mode.development(sourcemaps.init()))
+        .pipe(sass())
+        .pipe(postcss(require('./postcss.config')))
+        .pipe(rename({
+            suffix: '.min',
+            prefix: ''
+        }))
+        .pipe(mode.development(sourcemaps.write('.')))
+        .pipe(gulp.dest('build/css'))
+        .pipe(browserSync.reload({
+            stream: true
+        }));
+}
 
-gulp.task('sass', function () {
-	return gulp.src('app/scss/**/*.{scss,sass}')
-		.pipe(plumber({
-			errorHandler: function (err) {
-				console.log(err);
-				this.emit('end');
-			}
-		}))
-		.pipe(mode.development(sourcemaps.init()))
-		.pipe(sass())
-		.pipe(postcss([
-			autoprefixer(),
-			flexbugs(),
-			cssnano({
-				preset: [
-					'default', {
-						discardComments: {
-							removeAll: true
-						}
-					}
-				]
-			})
-		]))
-		.pipe(mode.production(
-			postcss([
-				extractMediaQuery({
-					output: {
-						path: 'build/css',
-						name: '[name]-[query].min.css'
-					},
-					queries: {
-						'print': 'print',
-						'(max-width:1024px)': 'tablet',
-						'(max-width:768px)': 'mobile'
-					},
-					minimize: true,
-					whitelist: true
-				})
-			])
-		))
-		.pipe(rename({
-			suffix: '.min',
-			prefix: ''
-		}))
-		.pipe(mode.development(sourcemaps.write('.')))
-		.pipe(gulp.dest('build/css'))
-		.pipe(browsersync.reload({
-			stream: true
-		}));
-});
+function scripts() {
+    return gulp.src('app/js/**/*.js')
+        .pipe(mode.development(gulpWebpack(webpackDevConfig, webpack)))
+        .pipe(mode.production(gulpWebpack(webpackProdConfig, webpack)))
+        .pipe(gulp.dest('build/js'))
+        .pipe(browserSync.reload({
+            stream: true
+        }))
+}
 
-gulp.task('js', function () {
-	return gulp.src([
-			'node_modules/jquery/dist/jquery.min.js',
-			'node_modules/swiper/dist/js/swiper.min.js',
-			'node_modules/tooltipster/dist/js/tooltipster.bundle.min.js',
-			'node_modules/baron/baron.min.js',
-			'node_modules/choices.js/public/assets/scripts/choices.min.js',
-			'app/libs/ion-tabs/ion.tabs.min.js',
-			'app/libs/ion-tabs/ion.tabs.min.js',
-			'app/js/common.js' // Always at the end
-		])
-		.pipe(plumber({
-			errorHandler: function (err) {
-				console.log(err);
-				this.emit('end');
-			}
-		}))
-		.pipe(mode.development(sourcemaps.init()))
-		.pipe(babel())
-		.pipe(concat('scripts.min.js'))
-		.pipe(uglify())
-		.pipe(mode.development(sourcemaps.write('.')))
-		.pipe(gulp.dest('build/js'))
-		.pipe(browsersync.reload({
-			stream: true
-		}))
-});
-
-gulp.task('svgsprite', function () {
+function svgSprite() {
 	return gulp.src('app/img/icons/icon-*.svg')
-		.pipe(plumber({
-			errorHandler: function (err) {
-				console.log(err);
-				this.emit('end');
-			}
-		}))
-		.pipe(cache(svgmin({
+		.pipe(svgmin({
 			plugins: [{
 				removeViewBox: false
 			}]
-		})))
+		}))
 		.pipe(svgstore({
 			inlineSvg: true
 		}))
 		.pipe(rename('sprite.svg'))
-		.pipe(gulp.dest('app/img/icons'));
-});
+		.pipe(gulp.dest('app/img/icons'))
+}
 
-gulp.task('html', function () {
+function html() {
 	return gulp.src('app/*.html')
-		.pipe(plumber({
-			errorHandler: function (err) {
-				console.log(err);
-				this.emit('end');
-			}
-		}))
 		.pipe(posthtml([
-			include({
-				encoding: 'utf8'
-			})
+			include()
 		]))
 		.pipe(beautify())
 		.pipe(gulp.dest('build'))
-		.pipe(browsersync.reload({
+		.pipe(browserSync.reload({
 			stream: true
 		}))
-});
+}
 
-gulp.task('browser-sync', function () {
-	browsersync({
+function server() {
+	browserSync.init({
 		server: {
 			baseDir: 'build/'
 		},
 		open: false
 	});
-	gulp.watch('app/scss/**/*.{scss,sass}', gulp.parallel('sass'));
-	gulp.watch(['libs/**/*.js', 'app/js/common.js'], gulp.parallel('js'));
-	gulp.watch(['!app/img/icons/**/*', 'app/img/**/*{jpg,jpeg,png,gif,svg,webp}'], gulp.parallel('copy'));
-	gulp.watch('app/img/icons/icon-*.svg', gulp.parallel('svgsprite'));
-	gulp.watch('app/**/*.html', gulp.parallel('html'));
-});
+	gulp.watch('app/scss/**/*.{scss,sass}', styles);
+	gulp.watch(['app/js/**/*.js'], scripts);
+	gulp.watch(['!app/img/icons/**/*', 'app/img/**/*{jpg,png,webp}'], copy);
+	gulp.watch('app/img/icons/icon-*.svg', gulp.series(svgSprite, html));
+	gulp.watch('app/**/*.html', html);
+}
 
-gulp.task('delbuild', function () {
+function clean() {
 	return del('build');
-});
+}
 
-gulp.task('clearcache', function () {
-	return cache.clearAll();
-});
-
-gulp.task('copy', function () {
+function copy() {
 	return gulp.src([
 			'app/.htaccess',
 			'app/fonts/**/*',
 			'!app/img/icons/**/*',
-			'app/img/**/*{jpg,jpeg,png,gif,svg,webp}'
+			'app/img/**/*{jpg,png,webp}'
 		], {
 			base: 'app'
 		})
 		.pipe(gulp.dest('build'))
-});
+        .pipe(browserSync.reload({
+            stream: true
+        }))
+}
 
-gulp.task('build', gulp.series('delbuild', 'copy', 'sass', 'js', 'svgsprite', 'html'));
+exports.styles = styles;
+exports.scripts = scripts;
+exports.svgSprite = svgSprite;
+exports.html = html;
+exports.server = server;
+exports.clean = clean;
+exports.copy = copy;
+
+exports.build = gulp.series(clean, styles, scripts, svgSprite, html, copy);
