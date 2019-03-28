@@ -15,6 +15,7 @@
 	"devDependencies": {
 		"@babel/core": "^7.4.0",
 		"@babel/preset-env": "^7.4.2",
+		"@htmlacademy/editorconfig-cli": "^1.0.0",
 		"autoprefixer": "^9.5.0",
 		"babel-eslint": "^10.0.1",
 		"babel-loader": "^8.0.5",
@@ -40,8 +41,6 @@
 		"stylelint": "^9.10.1",
 		"stylelint-order": "^2.1.0",
 		"uglifyjs-webpack-plugin": "^2.1.2",
-		"webpack": "^4.29.6",
-		"webpack-cli": "^3.3.0",
 		"webpack-stream": "^5.2.1"
 	},
 	"browserslist": [
@@ -49,6 +48,7 @@
 		"last 2 versions"
 	],
 	"lint-staged": {
+		"*.{html,js,md}": "editorconfig-cli",
 		"app/scss/**/*.scss": "stylelint --syntax=scss",
 		"app/js/**/*.js": "eslint"
 	},
