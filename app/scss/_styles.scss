@@ -1,23 +1,11 @@
 @import 'vars';
 @import 'fonts';
 @import 'libs';
-
-body {
-	font-family: $arial;
-
-	@media (max-width: $tablet) {
-		background-color: $color-main;
-	}
-
-	@media (max-width: $mobile) {
-		background-color: $color-danger;
-	}
-}
+@import 'components/components';
 
 .page {
 	box-sizing: border-box;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-	-webkit-text-size-adjust: 100%;
 	min-width: 320px;
 	min-height: 100%;
 
@@ -33,6 +21,25 @@ body {
 
 	&__footer {
 		flex-shrink: 0;
+	}
+}
+
+*,
+*:before,
+*:after {
+	box-sizing: inherit;
+}
+
+body {
+	font-family: $arial;
+	-webkit-font-smoothing: antialiased;
+
+	@media (max-width: $tablet) {
+		background-color: $color-main;
+	}
+
+	@media (max-width: $mobile) {
+		background-color: $color-danger;
 	}
 }
 

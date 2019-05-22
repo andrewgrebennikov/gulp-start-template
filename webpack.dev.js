@@ -2,7 +2,8 @@ const config = {
     mode: 'development',
     devtool: 'eval-cheap-module-source-map',
     entry: {
-        index: './app/js/index.js'
+        index: './app/js/index.js',
+        about: './app/js/about.js'
     },
     output: {
         filename: '[name].min.js'

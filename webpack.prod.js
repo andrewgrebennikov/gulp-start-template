@@ -1,9 +1,8 @@
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-
 const config = {
-    mode: 'production',
-    entry: {
-        index: './app/js/index.js'
+	mode: 'production',
+	entry: {
+        index: './app/js/index.js',
+		about: './app/js/about.js'
     },
     output: {
         filename: '[name].min.js'
@@ -18,14 +17,7 @@ const config = {
                 }
             }
         }
-    },
-    plugins: [
-        new UglifyJSPlugin({
-            cache: true,
-            parallel: true,
-            sourceMap: true
-        })
-    ]
+    }
 };
 
 module.exports = config;

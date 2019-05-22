@@ -11,35 +11,60 @@ const browserSync = require('browser-sync');
 const gulpWebpack = require('webpack-stream');
 const webpack = require('webpack');
 const rename = require('gulp-rename');
-const mode = require('gulp-mode')({modes: ['production', 'development']});
 const beautify = require('gulp-jsbeautifier');
 const webpackDevConfig = require('./webpack.dev.js');
 const webpackProdConfig = require('./webpack.prod.js');
 
-function styles() {
-    return gulp.src('app/scss/**/*.{scss,sass}')
-        .pipe(mode.development(sourcemaps.init()))
-        .pipe(sass())
+function stylesDev() {
+	return gulp.src('app/scss/**/*.{scss,sass}')
+		.pipe(sourcemaps.init())
+		.pipe(sass({
+			includePaths: [__dirname + '/', 'node_modules']
+		}))
         .pipe(postcss(require('./postcss.config')))
         .pipe(rename({
             suffix: '.min',
             prefix: ''
         }))
-        .pipe(mode.development(sourcemaps.write('.')))
+        .pipe((sourcemaps.write('.')))
         .pipe(gulp.dest('build/css'))
         .pipe(browserSync.reload({
             stream: true
         }));
 }
 
-function scripts() {
+function stylesProd() {
+	return gulp.src('app/scss/**/*.{scss,sass}')
+		.pipe(sass({
+			includePaths: [__dirname+'/','node_modules']
+		}))
+		.pipe(postcss(require('./postcss.config')))
+		.pipe(rename({
+			suffix: '.min',
+			prefix: ''
+		}))
+		.pipe(gulp.dest('build/css'))
+		.pipe(browserSync.reload({
+			stream: true
+		}));
+}
+
+function scriptsDev() {
     return gulp.src('app/js/**/*.js')
-        .pipe(mode.development(gulpWebpack(webpackDevConfig, webpack)))
-        .pipe(mode.production(gulpWebpack(webpackProdConfig, webpack)))
+        .pipe(gulpWebpack(webpackDevConfig, webpack))
         .pipe(gulp.dest('build/js'))
         .pipe(browserSync.reload({
             stream: true
         }))
+}
+
+function scriptsProd() {
+	return gulp.src('app/js/**/*.js')
+		.pipe(gulpWebpack(webpackProdConfig, webpack))
+		.pipe(gulp.dest('build/js'))
+		.pipe(browserSync.reload({
+			stream: true
+		}))
 }
 
 function svgSprite() {
@@ -75,9 +100,9 @@ function server() {
 		},
 		open: false
 	});
-	gulp.watch('app/scss/**/*.{scss,sass}', styles);
-	gulp.watch(['app/js/**/*.js'], scripts);
-	gulp.watch(['!app/img/icons/**/*', 'app/img/**/*{jpg,png,webp}'], copy);
+	gulp.watch('app/scss/**/*.{scss,sass}', stylesDev);
+	gulp.watch(['app/js/**/*.js'], scriptsDev);
+	gulp.watch(['!app/img/icons/**/*', 'app/img/**/*{jpg,png,webp}', 'app/fonts/**/*{woff,woff2}'], copy);
 	gulp.watch('app/img/icons/icon-*.svg', gulp.series(svgSprite, html));
 	gulp.watch('app/**/*.html', html);
 }
@@ -101,12 +126,13 @@ function copy() {
         }))
 }
 
-exports.styles = styles;
-exports.scripts = scripts;
+exports.styles = stylesDev;
+exports.scripts = scriptsDev;
 exports.svgSprite = svgSprite;
 exports.html = html;
 exports.server = server;
 exports.clean = clean;
 exports.copy = copy;
 
-exports.build = gulp.series(clean, styles, scripts, svgSprite, html, copy);
+exports.buildDev = gulp.series(clean, stylesDev, scriptsDev, svgSprite, html, copy);
+exports.buildProd = gulp.series(clean, stylesProd, scriptsProd, svgSprite, html, copy);
