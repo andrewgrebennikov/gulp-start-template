@@ -18,9 +18,7 @@ const webpackProdConfig = require('./webpack.prod.js');
 function stylesDev() {
 	return gulp.src('app/scss/**/*.{scss,sass}')
 		.pipe(sourcemaps.init())
-		.pipe(sass({
-			includePaths: [__dirname + '/', 'node_modules']
-		}))
+		.pipe(sass())
         .pipe(postcss(require('./postcss.config')))
         .pipe(rename({
             suffix: '.min',
@@ -35,9 +33,7 @@ function stylesDev() {
 
 function stylesProd() {
 	return gulp.src('app/scss/**/*.{scss,sass}')
-		.pipe(sass({
-			includePaths: [__dirname+'/','node_modules']
-		}))
+		.pipe(sass())
 		.pipe(postcss(require('./postcss.config')))
 		.pipe(rename({
 			suffix: '.min',
